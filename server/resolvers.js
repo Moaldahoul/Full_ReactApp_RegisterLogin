@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import _ from 'lodash';
 import { PubSub } from 'graphql-subscriptions';
+import { requiresAuth, requiresAdmin } from './permissions';
 
 export const pubsub = new PubSub();
 
@@ -78,9 +79,10 @@ export default {
                 models.User.update({ username: newUsername }, {where: {username}}),
         deleteUser: (parent, args, {models}) => 
                 models.User.destroy({ where: args}),
-        createBoard: (parent, args, {models}) => models.Board.create(args),
-        createSuggestion: (parent, args, {models}) => 
-                models.Suggestion.create(args),
+        createBoard: requiresAdmin.createResolver((parent, args, {models}) => 
+                models.Board.create(args)), // to creat board you need to have an admin access
+        createSuggestion: requiresAuth.createResolver((parent, args, {models}) => 
+                models.Suggestion.create(args)), // to be able to create a suggestion you have be Authenticated
         createUser: async (parent, args, { models }) => {
                 const user = args;
                 user.password = 'idk';
@@ -109,9 +111,9 @@ export default {
             //decode: No need a secret "we decode the token" | we use it on the client side {React}
             const token = jwt.sign(
                 {
-                    user: _.pick(user, ['id', 'username']),
-                }
-                , SECRET,
+                    user: _.pick(user, ['id', 'username', 'isAdmin']),
+                }, 
+                SECRET,
                 {
                     expiresIn: '1y',
                 },);

@@ -8,7 +8,11 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       unique: true,
     },
-    email: DataTypes.STRING,
+    isAdmin:{
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    password: DataTypes.STRING, // the mistake was here :/
     
   });
 
