@@ -12,6 +12,7 @@ import { SubscriptionServer } from 'subscriptions-transport-ws';
 import typeDefs from './schema';
 import resolvers from './resolvers';
 import models from './models';
+import { refreshTokens } from './auth';
 
 const schema = makeExecutableSchema({
   typeDefs,
@@ -25,14 +26,28 @@ const SECRET = 'asdfghjklqwertyuioppzxcvbnm';
 const app = express();
 
 const addUser = async (req) => {
-  const token = req.headers.authorization;
-  try {
-    const { user } = await jwt.verify(token, SECRET);
-    req.user = user;
-  }catch (err){
-    console.log(err); 
+  const token = req.headers['x-token'];
+  if(token){
+    try {
+      const { user } = await jwt.verify(token, SECRET);
+      req.user = user;
+    }catch (err){
+      const refreshToken = req.headers['x-refresh-token'];
+      const newTokens = await refreshTokens(
+        token,
+        refreshToken,
+        models,
+        SECRET,
+      );
+      if(newTokens.token && newTokens.refreshToken) {
+        res.set('Access-Control-Expose-Headers', 'x-token, x-refresh-token');
+        res.set('x-token', newTokens.token);
+        res.set('x-refresh-token', newTokens.refreshToken);
+      }
+      req.user = newTokens.user;
+    }
   }
-  req.next();
+  next();
 };
 
 app.use(cors('*'));
