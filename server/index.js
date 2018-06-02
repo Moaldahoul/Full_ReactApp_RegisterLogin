@@ -7,12 +7,15 @@ import jwt from 'jsonwebtoken';
 import { createServer } from 'http';
 import { execute, subscribe } from 'graphql';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
+import _ from 'lodash';
 
 
 import typeDefs from './schema';
 import resolvers from './resolvers';
 import models from './models';
 import { refreshTokens } from './auth';
+import DataLoader from 'dataloader';
+
 
 const schema = makeExecutableSchema({
   typeDefs,
@@ -25,7 +28,7 @@ const SECRET = 'asdfghjklqwertyuioppzxcvbnm';
 
 const app = express();
 
-const addUser = async (req) => {
+const addUser = async (req, res, next) => {
   const token = req.headers['x-token'];
   if(token){
     try {
@@ -57,8 +60,24 @@ app.use(
   '/graphiql',
   graphiqlExpress({ 
     endpointURL: '/graphql',
-}));
+  }),
+);
 
+const batchSuggestions = async (keys, { Suggestion }) => {
+  // key = [1, 2, 3, ..., 13]
+  const suggestions = await Suggestion.findAll({
+    raw: true,
+    where: {
+      boardId: {
+        $in: keys,
+      },
+    },
+  });
+  // suggestion = [{ text:'hi', board:1 }, { text: 'bye', boardId: 2 },{ text: 'bye from sug, boardId: 2 }]
+  const gs = _.groupBy(suggestions, 'boardId'); //gs: group suggestions
+  //gs { 1: [{text: 'hi', boardId: 1}], 2: [{ text: 'bye', boardId: 2 },{ text: 'bye from sug, boardId: 2 }]
+  return keys.map(k => gs[k] || []);
+};
 
 // bodyParser is needed just for POST.
 app.use(
@@ -70,6 +89,7 @@ app.use(
       models,
       SECRET,
       user: req.user,
+      suggestionLoader: new DataLoader(keys => batchSuggestions(keys, models)),
     },
   })),
 );

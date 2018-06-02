@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import _ from 'lodash';
+// import jwt from 'jsonwebtoken';
+// import _ from 'lodash';
 import { PubSub } from 'graphql-subscriptions';
 import { requiresAuth, requiresAdmin } from './permissions';
 import { refreshTokens, tryLogin } from "./auth";
@@ -31,12 +31,8 @@ export default {
             }),
     },
     Board: {
-        suggestions:({ id }, args, { models }) =>
-        models.Suggestion.findAll({
-            where: {
-                boardId: id,
-            },
-        }),
+        suggestions:({ id }, args, { suggestionLoader }) =>
+        suggestionLoader.load(id),
     },
     Suggestion: {
         creator: ({creatorId}, args, { models }) => 
