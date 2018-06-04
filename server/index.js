@@ -34,7 +34,7 @@ passport.use(new FacebookStrategy(
   {
     clientID: process.env.FACEBOOK_CLIENT_ID, // need to be removed before to push it 
     clientSecret: process.env.FACEBOOK_SECRET_ID, // for real projects you need to add it to the secret place/file to save it and import it
-    callbackURL: "http://localhost:3000/auth/facebook/callback"
+    callbackURL: "http://localhost:4000/auth/facebook/callback"
 },
 async (accessToken, refreshToken, profile, cb) => {
   //2 Cases
@@ -149,7 +149,7 @@ app.use(
 const server = createServer(app);
 
 models.sequelize.sync().then(() => 
-  server.listen(3000, () => {
+  server.listen(4000, () => {
     new SubscriptionServer({
       execute,
       subscribe,
