@@ -8,13 +8,15 @@ import { createServer } from 'http';
 import { execute, subscribe } from 'graphql';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
 import _ from 'lodash';
+import DataLoader from 'dataloader';
+import passport from 'passport';
+import FacebookStrategy from 'passport-facebook';
 
 
 import typeDefs from './schema';
 import resolvers from './resolvers';
 import models from './models';
 import { refreshTokens } from './auth';
-import DataLoader from 'dataloader';
 
 
 const schema = makeExecutableSchema({
@@ -27,6 +29,55 @@ const schema = makeExecutableSchema({
 const SECRET = 'asdfghjklqwertyuioppzxcvbnm';
 
 const app = express();
+
+passport.use(new FacebookStrategy(
+  {
+    clientID: process.env.FACEBOOK_CLIENT_ID, // need to be removed before to push it 
+    clientSecret: process.env.FACEBOOK_SECRET_ID, // for real projects you need to add it to the secret place/file to save it and import it
+    callbackURL: "http://localhost:3000/auth/facebook/callback"
+},
+async (accessToken, refreshToken, profile, cb) => {
+  //2 Cases
+  //#1 first time login
+  // #2 other times
+  const { id, displayName } = profile;
+  //[]
+  const fbUsers = await models.FbAuth.findAll({ 
+                limit: 1, 
+                where: { fb_id: id }
+              });
+
+  console.log(fbUsers);
+  console.log(profile);
+  
+  if(!fbUsers.length){
+    //create user
+    const user = await models.User.create();
+    await models.FbAuth.create({
+      fb_id: id,
+      display_name: displayName,
+      user_id: user.id
+    });
+  }
+  
+  cb(null, {});
+  /* User.findOrCreate({ facebookId: profile.id }, function (err, user) {
+    return cb(err, user);
+  }); */
+},
+),);
+
+app.use(passport.initialize());
+
+app.get('/flogin', passport.authenticate('facebook'));
+
+app.get('/auth/facebook/callback',
+  passport.authenticate('facebook', { session: false }), /* failureRedirect: '/login' */
+  (req, res) => {
+    res.send('Auth Succeed');
+    // Successful authentication, redirect home.
+    // res.redirect('/');
+  },);
 
 const addUser = async (req, res, next) => {
   const token = req.headers['x-token'];
