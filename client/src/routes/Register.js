@@ -1,8 +1,9 @@
 import React from 'react';
 import TextField from 'material-ui/TextField';
-import Button from '@material-ui/core/Button';
 import RaisedButton from 'material-ui/RaisedButton';
+import {graphql} from 'react-apollo';
 
+import { register } from '../mutations';
 
 
 
@@ -27,9 +28,13 @@ class Register extends React.Component {
         });
     };
 
-    onSubmit = () => {
-            console.log(this.state.fields);
-    }
+    onSubmit = async () => {
+        const user = await this.props.mutate({
+                variables: this.state.fields,
+            });
+            console.log(user);
+            
+    };
 
 
     render() {
@@ -72,4 +77,4 @@ class Register extends React.Component {
     }
 }
 
-export default Register;
+export default graphql(register)(Register);

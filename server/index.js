@@ -32,8 +32,8 @@ const app = express();
 
 passport.use(new FacebookStrategy(
   {
-    clientID: process.env.FACEBOOK_CLIENT_ID, // need to be removed before to push it 
-    clientSecret: process.env.FACEBOOK_SECRET_ID, // for real projects you need to add it to the secret place/file to save it and import it
+    clientID: '497361410683373',//process.env.FACEBOOK_CLIENT_ID, // need to be removed before to push it 
+    clientSecret: '7cb73f2d52d2d09cb5ef8634e21f89d7', //process.env.FACEBOOK_SECRET_ID, // for real projects you need to add it to the secret place/file to save it and import it
     callbackURL: "http://localhost:4000/auth/facebook/callback"
 },
 async (accessToken, refreshToken, profile, cb) => {
