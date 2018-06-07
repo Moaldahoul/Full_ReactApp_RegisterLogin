@@ -55,8 +55,8 @@ async (accessToken, refreshToken, profile, cb) => {
     const user = await models.User.create();
     await models.FbAuth.create({
       fb_id: id,
-      display_name: displayName,
-      user_id: user.id
+      displayName: displayName,
+      userId: user.id
     });
   }
   

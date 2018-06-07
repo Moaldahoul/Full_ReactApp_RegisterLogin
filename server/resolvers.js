@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
+import joinMonster from 'join-monster';
 // import jwt from 'jsonwebtoken';
-// import _ from 'lodash';
+import _ from 'lodash';
 import { PubSub } from 'graphql-subscriptions';
 import { requiresAuth, requiresAdmin } from './permissions';
 import { refreshTokens, tryLogin } from "./auth";
@@ -16,39 +17,39 @@ export default {
         },
       },
 
-    User: {
-        boards:({id}, args, { models }) => 
-            models.Board.findAll({
-                where: {
-                    owner: id,
-                }
-        }) ,
-        suggestions:({ id }, args, { models }) => 
-            models.Suggestion.findAll({
-                where: {
-                    creatorId: id,
-                } ,
-            }),
-    },
-    Board: {
-        suggestions:({ id }, args, { suggestionLoader }) =>
-        suggestionLoader.load(id),
-    },
-    Suggestion: {
-        creator: ({creatorId}, args, { models }) => 
-        models.User.findOne({
-                where: {
-                    id: creatorId,
-                },
-            }),
-        },
+    // User: {
+    //     boards:({id}, args, { models }) => 
+    //         models.Board.findAll({
+    //             where: {
+    //                 owner: id,
+    //             }
+    //     }) ,
+    //     suggestions:({ id }, args, { models }) => 
+    //         models.Suggestion.findAll({
+    //             where: {
+    //                 creatorId: id,
+    //             } ,
+    //         }),
+    // },
+    // Board: {
+    //     suggestions:({ id }, args, { suggestionLoader }) =>
+    //     suggestionLoader.load(id),
+    // },
+    // Suggestion: {
+    //     creator: ({ creatorId }, args, { models }) => 
+    //     models.User.findOne({
+    //             where: {
+    //                 id: creatorId,
+    //             },
+    //         }),
+    //     },
     Query: {
-        allUsers: (parent, args, {models}) => models.User.findAll( ),
+        allUsers: requiresAuth((parent, args, {models}) => models.User.findAll()),
 
         me: (parent, args, {models, user}) => {
             if(user){
                     // they are logged in
-                return models.User.findOne( { 
+                return models.User.findOne({ 
                     where: {
                          id: user.id,
                     },
@@ -72,13 +73,13 @@ export default {
     },
 
     Mutation: {
-        updateUser: (parent, { username, newUsername } , {models}) => 
+        updateUser: (parent, { username, newUsername } , { models }) => 
                 models.User.update({ username: newUsername }, {where: {username}}),
-        deleteUser: (parent, args, {models}) => 
-                models.User.destroy({ where: args}),
-        createBoard: requiresAdmin.createResolver((parent, args, {models}) => 
+        deleteUser: (parent, args, { models }) => 
+                models.User.destroy({ where: args }),
+        createBoard: requiresAdmin.createResolver((parent, args, { models }) => 
                 models.Board.create(args)), // to creat board you need to have an admin access
-        createSuggestion: requiresAuth.createResolver((parent, args, {models}) => 
+        createSuggestion: requiresAuth.createResolver((parent, args, { models }) => 
                 models.Suggestion.create(args)), // to be able to create a suggestion you have be Authenticated
         createUser: async (parent, args, { models }) => {
                 const user = args;
@@ -90,9 +91,16 @@ export default {
                     return userAdded;
         },
         register: async (parent, args, { models }) => {
-            const user = args;
-            user.password = await bcrypt.hash(user.password, 12);
-            return models.User.create(user);
+            const user = _.pick(args, 'username');
+            const localAuth = _.pick(agrs, ['email', 'password']);
+            const passwordPromise = bcrypt.hash(localAuth.password, 12);
+            const createUserPromise = models.User.create(user);
+            const [password, createdUser] = await Promise.all([ passwordPromise, createUserPromise]);
+            localAuth.password = password;
+            return models.LocalAuth.create({
+                ...localAuth,
+                userId: createdUser.id,
+            });
         },
         login: async (parent, { email, password }, {models, SECRET}) =>
             tryLogin(email, password, models, SECRET),

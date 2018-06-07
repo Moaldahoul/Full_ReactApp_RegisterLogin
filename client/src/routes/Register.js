@@ -1,11 +1,9 @@
 import React from 'react';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
-import {graphql} from 'react-apollo';
+import { graphql } from 'react-apollo';
 
 import { register } from '../mutations';
-
-
 
 class Register extends React.Component {
     constructor(props) {
