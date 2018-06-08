@@ -58,10 +58,10 @@ export const tryLogin = async (email, password, models, SECRET) =>{
         //bad password
         throw new Error('Invalid login');
     }
-    console.log("auth issues");
-    console.log(localAuth);
+    // console.log("auth issues");
+    // console.log(localAuth);
     const user = await models.User.findOne({ where: { id: localAuth.userId }, raw: true });
-    console.log(user);
+    // console.log(user);
 
     const [token, refreshToken] = await createTokens(user, SECRET);
     

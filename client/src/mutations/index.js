@@ -9,3 +9,21 @@ export const register = gql`
         }
     }
 `;
+
+export const login = gql`
+    mutation($email: String!, $password: String!){
+        login(email: $email, password: $password){
+            token
+            refreshToken
+        }
+    }
+`;
+
+export const createSuggestion = gql`
+    mutation($text: String!, $boardId: Int!){
+        createSuggestion(text: $text, boardId: $boardId){
+            id
+            text
+        }
+    }
+`;

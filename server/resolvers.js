@@ -1,8 +1,9 @@
 import bcrypt from 'bcrypt';
-import joinMonster from 'join-monster';
-// import jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import _ from 'lodash';
 import { PubSub } from 'graphql-subscriptions';
+import joinMonster from 'join-monster';
+
 import { requiresAuth, requiresAdmin } from './permissions';
 import { refreshTokens, tryLogin } from "./auth";
 
@@ -13,38 +14,12 @@ const USER_ADDED = 'USER_ADDED';
 export default {
     Subscription: {
         userAdded: {
-          subscribe: () => pubsub.asyncIterator(USER_ADDED),
+            subscribe: () => pubsub.asyncIterator(USER_ADDED),
         },
       },
 
-    // User: {
-    //     boards:({id}, args, { models }) => 
-    //         models.Board.findAll({
-    //             where: {
-    //                 owner: id,
-    //             }
-    //     }) ,
-    //     suggestions:({ id }, args, { models }) => 
-    //         models.Suggestion.findAll({
-    //             where: {
-    //                 creatorId: id,
-    //             } ,
-    //         }),
-    // },
-    // Board: {
-    //     suggestions:({ id }, args, { suggestionLoader }) =>
-    //     suggestionLoader.load(id),
-    // },
-    // Suggestion: {
-    //     creator: ({ creatorId }, args, { models }) => 
-    //     models.User.findOne({
-    //             where: {
-    //                 id: creatorId,
-    //             },
-    //         }),
-    //     },
     Query: {
-        allUsers: requiresAuth((parent, args, {models}) => models.User.findAll()),
+        allUsers: requiresAuth.createResolver((parent, args, {models}) => models.User.findAll()),
 
         me: (parent, args, {models, user}) => {
             if(user){
@@ -70,6 +45,10 @@ export default {
                     creatorId,
             },
         }),
+        getBoard: (parent, args, { models }, info) => 
+            joinMonster(info, args, sql => 
+                models.sequelize.query(sql, { type: models.sequelize.QueryTypes.SELECT }),
+            )
     },
 
     Mutation: {
@@ -77,10 +56,11 @@ export default {
                 models.User.update({ username: newUsername }, {where: {username}}),
         deleteUser: (parent, args, { models }) => 
                 models.User.destroy({ where: args }),
-        createBoard: requiresAdmin.createResolver((parent, args, { models }) => 
-                models.Board.create(args)), // to creat board you need to have an admin access
-        createSuggestion: requiresAuth.createResolver((parent, args, { models }) => 
-                models.Suggestion.create(args)), // to be able to create a suggestion you have be Authenticated
+        createBoard: (parent, args, { models }) => 
+                models.Board.create(args),
+             // to creat board you need to have an admin access
+        createSuggestion: (parent, args, { models, user }) => 
+                models.Suggestion.create({ ...args, creatoeId: user.id}), // to be able to create a suggestion you have be Authenticated
         createUser: async (parent, args, { models }) => {
                 const user = args;
                 user.password = 'idk';

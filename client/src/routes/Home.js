@@ -1,3 +1,6 @@
 import React from 'react';
 
-export default () => <h1> Welcome to React Home page </h1>;
+import Board from '../components/Board';
+
+
+export default () => <Board boardId={1} /> ;

@@ -8,7 +8,9 @@ const createResolver = (resolver) => {
         return createResolver(newResolver);
     };
     return baseResolver;
+
 };
+
 
 export const requiresAuth = createResolver((parent, args, context) => {
     if(!context.user || !context.user.id){

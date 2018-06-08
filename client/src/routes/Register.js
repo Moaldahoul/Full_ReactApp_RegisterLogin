@@ -6,16 +6,16 @@ import { graphql } from 'react-apollo';
 import { register } from '../mutations';
 
 class Register extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
+    // constructor(props) {
+    //     super(props);
+/* this. */state = {
             fields: {
                 username: '',
                 email: '',
                 password: '',
             }
         };
-    }
+    // }
 
     onChange = e => {
         this.setState ({
@@ -30,8 +30,7 @@ class Register extends React.Component {
         const user = await this.props.mutate({
                 variables: this.state.fields,
             });
-            console.log(user);
-            
+            console.log(user);   
     };
 
 
