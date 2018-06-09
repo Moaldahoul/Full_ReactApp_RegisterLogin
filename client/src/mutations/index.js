@@ -27,3 +27,16 @@ export const createSuggestion = gql`
         }
     }
 `;
+
+export const createBoardMutation = gql`
+    mutation($name: String!){
+        createBoard(name: $name){
+            name
+            suggestions {
+                id
+                text
+            }
+        }
+    }
+`;
+

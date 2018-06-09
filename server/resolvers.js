@@ -62,9 +62,14 @@ export default {
                 models.User.update({ username: newUsername }, {where: {username}}),
         deleteUser: (parent, args, { models }) => 
                 models.User.destroy({ where: args }),
-        createBoard: (parent, args, { models }) => 
-                models.Board.create(args),
-             // to creat board you need to have an admin access
+        createBoard: async (parent, args, { models, user }) => {
+                const board = await models.Board.create({ ...args }); //, owner: user.id
+                return {
+                    ...board.dataValues,
+                    suggestions: [],
+                };
+        },
+
         createSuggestion: (parent, args, { models, user }) => 
                 models.Suggestion.create({ ...args, creatoeId: user.id}), // to be able to create a suggestion you have be Authenticated
         createUser: async (parent, args, { models }) => {

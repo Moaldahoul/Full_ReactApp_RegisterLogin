@@ -37,7 +37,6 @@ class Board extends React.Component {
               update: (store, { data }) => {
                 const newData = store.readQuery({ 
                     query: allBoardsQuery, 
-                    variables: { boardId: this.props.board.id },
                 });
                 newData.allBoards[this.props.i].suggestions.push(data.createSuggestion);
                 // Write our data back to the cache.
