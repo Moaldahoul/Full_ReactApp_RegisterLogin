@@ -19,8 +19,8 @@ export default `
 
     type User {
         id: Int!  
-       username: String!
-       email: String!
+       username: String
+       email: String
        createdAt: String!
        updatedAt: String!
        boards: [Board!]!
@@ -38,14 +38,16 @@ export default `
         me: User
         userBoards(owner: Int!): [Board!]!
         userSuggestions(creatorId: String!): [Suggestion!]!
+        getBoard(boardId: Int!): Board
+        allBoards: [Board!]!
     }
 
     type Mutation {
         updateUser(username: String!, newUsername: String!): [Int!]!
         deleteUser(username: String!): Int!
         createBoard(owner: Int!, name: String): Board!
-        createSuggestion(creatorId: Int!, text: String, boardId: Int!): Suggestion!
-        register(username: String!, email: String!, password: String!, isAdmin: Boolean): User!
+        createSuggestion(text: String, boardId: Int!): Suggestion!
+        register(username: String!, email: String!, password: String!): User!
         login(email: String!, password: String!): AuthPlayload!
         createUser(username: String!): User!
         refreshTokens(token: String!, refreshToken: String!): AuthPlayload!

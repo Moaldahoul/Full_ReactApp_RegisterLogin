@@ -6,7 +6,7 @@ export default (sequelize, DataTypes) => {
     Board.associate = (models) => {
         // 1 to many with board
         Board.hasMany(models.Suggestion, {
-            foreignKey: 'boardId',   
+          foreignKey: 'boardId',   
           });
     };
   
