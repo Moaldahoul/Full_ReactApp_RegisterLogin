@@ -10,7 +10,7 @@ import Login from './Login';
         <Switch>
             <Route path='/' render={() => <Home /> } exact />
             <Route path='/register' render={() => <Register /> } exact />
-            <Route path='/login' render={() => <Login /> } exact />
+            <Route path='/login' render={ props => <Login {...props} /> } exact />
         </Switch>
 
       </BrowserRouter>

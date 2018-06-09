@@ -33,6 +33,10 @@ class Login extends React.Component {
             const { token, refreshToken } = data.login;
             localStorage.setItem('token', token);
             localStorage.setItem('refreshToken', refreshToken);
+
+            if (token && refreshToken){
+                this.props.history.push('/');
+            }
     };
 
 

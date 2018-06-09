@@ -7,7 +7,7 @@ import ContentDrafts from 'material-ui/svg-icons/content/drafts';
 import TextField from 'material-ui/TextField';
 import { compose, graphql } from 'react-apollo';
 
-import { getBoard } from '../queries';
+import { allBoardsQuery } from '../queries';
 import { createSuggestion } from '../mutations';
 import Suggestion from './Suggestion';
 
@@ -23,7 +23,7 @@ class Board extends React.Component {
         await this.props.mutate({
             variables:{
                 text: suggestion,
-                boardId: this.props.boardId,
+                boardId: this.props.board.id,
                 
             },
             optimisticResponse: {
@@ -36,29 +36,22 @@ class Board extends React.Component {
               },
               update: (store, { data }) => {
                 const newData = store.readQuery({ 
-                    query: getBoard, 
-                    variables: { boardId: this.props.boardId },
+                    query: allBoardsQuery, 
+                    variables: { boardId: this.props.board.id },
                 });
-                newData.getBoard.suggestions.push(data.createSuggestion);
+                newData.allBoards[this.props.i].suggestions.push(data.createSuggestion);
                 // Write our data back to the cache.
                 store.writeQuery({ 
-                    query: getBoard, 
+                    query: allBoardsQuery, 
                     data: newData, 
-                    variables: { boardId: this.props.boardId }, 
                 });
               },
         });
     };
 
     render(){
-        let name = '';
-        let suggestions = [];
+        const {  name, suggestions } = this.props.board;
 
-        if (!this.props.data.loading) {
-        const { getBoard } = this.props.data;
-        name = getBoard.name;
-        suggestions = getBoard.suggestions;
-        }
         return(
             <div>
                 <h1> {name} </h1>
@@ -80,10 +73,5 @@ class Board extends React.Component {
     }
 }
 
-export default compose(
-    graphql(getBoard, {
-        options: ({ boardId }) => ({ variables: { boardId } }),
-    }),
-    graphql(createSuggestion),
-)(Board);
+export default graphql(createSuggestion)(Board);
 

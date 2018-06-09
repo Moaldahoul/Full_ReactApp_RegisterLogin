@@ -45,10 +45,16 @@ export default {
                     creatorId,
             },
         }),
+
         getBoard: (parent, args, { models }, info) => 
             joinMonster(info, args, sql => 
                 models.sequelize.query(sql, { type: models.sequelize.QueryTypes.SELECT }),
-            )
+            ),
+        
+        allBoards: (parent, args, { models }, info) => 
+            joinMonster(info, args, sql => 
+                models.sequelize.query(sql, { type: models.sequelize.QueryTypes.SELECT }),
+            ),
     },
 
     Mutation: {
