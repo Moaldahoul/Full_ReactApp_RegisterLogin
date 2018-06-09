@@ -3,9 +3,9 @@ import Sequelize from 'sequelize';
 
 
 const sequelize = new Sequelize(
-    'test_graphql_db' , 
-    'test_graphql_admin', 
-    'iampassword', 
+    'react_app' , 
+    'app_admin', 
+    'admin', 
     {
         host: 'localhost',
         dialect: 'postgres',
@@ -20,7 +20,7 @@ const db = {
 };
 
 Object.keys(db).forEach(modelName => {
-  if (db[modelName].associate) {
+  if(db[modelName].associate)  {
     db[modelName].associate(db);
   }
 });
