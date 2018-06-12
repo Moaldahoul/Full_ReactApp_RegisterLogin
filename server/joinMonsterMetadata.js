@@ -10,6 +10,12 @@ export default {
     Suggestion: {
         sqlTable: 'suggestions',
         uniqueKey: 'id',
+        fields: {
+            votes: {
+                sqlExpr: ()  =>
+                    `(SELECT count(*) from votes where "suggestion"."id" = votes."suggestionId")`,
+            },
+        },
     },
 
     Board:{

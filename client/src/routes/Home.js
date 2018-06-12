@@ -31,14 +31,14 @@ const row = (boards, i) =>
 class Home extends React.Component{
     state={
         openDialog: false,
-    }
+    };
     render(){
         const { data: {allBoards = [] } } = this.props;
         return(
             <div>
                 <RaisedButton 
                 label="Create Board"
-                onTouchTap={() => this.setState({ openDialog: true })}
+                onClick={() => this.setState({ openDialog: true })}
                 fullWidth
                 primary
                 />

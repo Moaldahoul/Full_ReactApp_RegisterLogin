@@ -12,6 +12,5 @@ import Login from './Login';
             <Route path='/register' render={() => <Register /> } exact />
             <Route path='/login' render={ props => <Login {...props} /> } exact />
         </Switch>
-
       </BrowserRouter>
   );

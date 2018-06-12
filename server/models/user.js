@@ -19,6 +19,11 @@ User.associate = (models) => {
     User.hasMany(models.Suggestion, {
       foreignKey: 'creatorId', 
     });
+    // many to many with suggestion
+    User.belongsToMany(models.Suggestion, {
+      through: models.Vote,
+      foreignKey: 'userId',
+    });
  };
 
   return User;

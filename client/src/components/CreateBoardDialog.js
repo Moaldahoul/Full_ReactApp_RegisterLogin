@@ -46,8 +46,8 @@ class CreateBoardDialog extends React.Component {
 
     render(){
         const actions =[
-            <FlatButton label="Cancel" primary onTouchTap={()=> this.handleClose()} />,
-            <FlatButton label="Save" primary onTouchTap={()=> this.handleOk()} />,
+            <FlatButton label="Cancel" primary onClick={()=> this.handleClose()} />,
+            <FlatButton label="Save" primary onClick={()=> this.handleOk()} />,
         ];
         return(
             <Dialog

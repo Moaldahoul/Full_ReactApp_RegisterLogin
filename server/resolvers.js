@@ -58,20 +58,29 @@ export default {
     },
 
     Mutation: {
+        voteOnSuggestion: async (parent, { id } , { models, user }) => {
+            await models.Vote.create({ suggestionId: id , userId: user.id });
+            return true;
+        },
         updateUser: (parent, { username, newUsername } , { models }) => 
                 models.User.update({ username: newUsername }, {where: {username}}),
         deleteUser: (parent, args, { models }) => 
                 models.User.destroy({ where: args }),
         createBoard: async (parent, args, { models, user }) => {
-                const board = await models.Board.create({ ...args }); //, owner: user.id
+                const board = await models.Board.create({ ...args, owner: user.id }); //
                 return {
                     ...board.dataValues,
                     suggestions: [],
                 };
         },
 
-        createSuggestion: (parent, args, { models, user }) => 
-                models.Suggestion.create({ ...args, creatoeId: user.id}), // to be able to create a suggestion you have be Authenticated
+        createSuggestion: async (parent, args, { models, user }) => {
+            const s = await models.Suggestion.create({ ...args, creatorId: user.id});
+            return{
+                ...s.dataValues,
+                votes: 0,
+            };
+        },
         createUser: async (parent, args, { models }) => {
                 const user = args;
                 user.password = 'idk';
