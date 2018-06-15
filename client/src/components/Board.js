@@ -1,11 +1,11 @@
 import React from 'react';
-import { List, ListItem } from 'material-ui/List';
-import ContentInbox from 'material-ui/svg-icons/content/inbox';
-import ActionGrade from 'material-ui/svg-icons/action/grade';
-import ContentSend from 'material-ui/svg-icons/content/send';
-import ContentDrafts from 'material-ui/svg-icons/content/drafts';
+import { List/* , ListItem  */} from 'material-ui/List';
+// import ContentInbox from 'material-ui/svg-icons/content/inbox';
+// import ActionGrade from 'material-ui/svg-icons/action/grade';
+// import ContentSend from 'material-ui/svg-icons/content/send';
+// import ContentDrafts from 'material-ui/svg-icons/content/drafts';
 import TextField from 'material-ui/TextField';
-import { compose, graphql } from 'react-apollo';
+import { /* compose, */ graphql } from 'react-apollo';
 
 import { allBoardsQuery } from '../queries';
 import { createSuggestion } from '../mutations';
