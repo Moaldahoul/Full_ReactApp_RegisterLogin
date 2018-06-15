@@ -37,7 +37,7 @@
     "passport-facebook": "^2.1.1",
     "pg": "^7.4.3",
     "sequelize": "^4.37.10",
-    "subscriptions-transport-ws": "^0.9.9"
+    "subscriptions-transport-ws": "^0.9.11"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

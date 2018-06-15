@@ -9,12 +9,12 @@ import { refreshTokens, tryLogin } from "./auth";
 
 export const pubsub = new PubSub();
 
-const USER_ADDED = 'USER_ADDED';
+const VOTE_HAPPENED = 'VOTE_HAPPENED';
 
 export default {
     Subscription: {
-        userAdded: {
-            subscribe: () => pubsub.asyncIterator(USER_ADDED),
+        voteHappened: {
+            subscribe: () => pubsub.asyncIterator(VOTE_HAPPENED),
         },
       },
 
@@ -60,6 +60,7 @@ export default {
     Mutation: {
         voteOnSuggestion: async (parent, { id } , { models, user }) => {
             await models.Vote.create({ suggestionId: id , userId: user.id });
+            pubsub.publish(VOTE_HAPPENED, { voteHappened:{ suggestionId: id , incrementAmount: 1 } });
             return true;
         },
         updateUser: (parent, { username, newUsername } , { models }) => 

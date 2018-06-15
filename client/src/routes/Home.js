@@ -1,5 +1,5 @@
 import React from 'react';
-import { graphql } from 'react-apollo';
+import { compose, graphql } from 'react-apollo';
 import _ from 'lodash';
 
 import RaisedButton from 'material-ui/RaisedButton';
@@ -7,6 +7,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Board from '../components/Board';
 import CreateBoardDialog from '../components/CreateBoardDialog';
 import { allBoardsQuery } from '../queries';
+import { voteHappened } from '../subscriptons';
 
 // i = 0
 // 0 : i2 = 0
@@ -32,6 +33,30 @@ class Home extends React.Component{
     state={
         openDialog: false,
     };
+
+    
+    componentWillMount() {
+        this.props.data.subscribeToMore({
+            document: voteHappened,
+            updateQuery: (prev, { subscriptionData }) => {
+                if( !subscriptionData.data) {
+                    return prev;
+                }
+                const { suggestionId, incrementAmount } = subscriptionData.data.voteHappened;
+                return{
+                    ...prev,
+                    allBoards: prev.allBoards.map(x => ({
+                        ...x,
+                        suggestions: x.suggestions.map(y =>({
+                        ...y,
+                        votes: y.id === suggestionId ? y.votes + incrementAmount : y.votes,
+                        })),
+                    })),
+                };
+            },
+        });
+    }
+    
     render(){
         const { data: {allBoards = [] } } = this.props;
         return(
@@ -56,4 +81,4 @@ class Home extends React.Component{
 }
 
 
-export default graphql(allBoardsQuery)(Home);
+export default compose(graphql(allBoardsQuery))(Home);

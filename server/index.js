@@ -115,6 +115,7 @@ app.use(
   '/graphiql',
   graphiqlExpress({ 
     endpointURL: '/graphql',
+    subscriptionsEndpoint: 'ws://localhost:4000/subscriptions',
   }),
 );
 

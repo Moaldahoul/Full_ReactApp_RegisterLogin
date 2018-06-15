@@ -18,12 +18,18 @@ class Register extends React.Component {
     // }
 
     onChange = e => {
-        this.setState ({
+        // Trying to make validation for the register 
+        // if (name.length < 3 || password.length < 7 || email.length !== "@" ){
+        //     return("Make sure your details are right");
+        // }
+        // else{
+            this.setState ({
             fields:{
                 ...this.state.fields,
                 [e.target.name]: e.target.value,
             }
         });
+        // }
     };
 
     onSubmit = async () => {
