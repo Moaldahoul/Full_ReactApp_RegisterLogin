@@ -15,13 +15,17 @@ const networkInterface = createNetworkInterface({
     uri: 'http://localhost:4000/graphql',
   });
 
-  const wsClient = new SubscriptionClient(`ws://localhost:4000/subscriptions`, {
+  const wsClient = new SubscriptionClient(`wss://localhost:4000/subscriptions`, {
     reconnect: true,
   });
-  
-  const networkInterfaceWithSubscriptions = addGraphQLSubscriptions(networkInterface, wsClient);
+  console.log(typeof wsClient)
+const networkInterfaceWithSubscriptions = addGraphQLSubscriptions (
+    networkInterface,
+    wsClient,
+);
 
-  networkInterface.use([{
+  networkInterface.use([
+      {
       applyMiddleware(req, next){
           if(!req.options.headers){
               req.options.headers={};
@@ -35,7 +39,7 @@ const networkInterface = createNetworkInterface({
 
 const client = new ApolloClient({
     networkInterface: networkInterfaceWithSubscriptions,
-  });
+});
 
 const App = (
     <MuiThemeProvider>
