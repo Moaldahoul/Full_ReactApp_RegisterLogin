@@ -4,6 +4,7 @@ export default `
         suggestionId: Int!
         incrementAmount: Int!
     }
+    
     type Subscription {
         voteHappened: NewVoteCount!
     }

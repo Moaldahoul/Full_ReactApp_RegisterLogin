@@ -39,7 +39,7 @@ class Home extends React.Component{
         this.props.data.subscribeToMore({
             document: voteHappened,
             updateQuery: (prev, { subscriptionData }) => {
-                if( !subscriptionData.data) {
+                if(!subscriptionData.data) {
                     return prev;
                 }
                 const { suggestionId, incrementAmount } = subscriptionData.data.voteHappened;
@@ -49,8 +49,8 @@ class Home extends React.Component{
                         ...x,
                         suggestions: x.suggestions.map(y =>({
                         ...y,
-                        votes: y.id === suggestionId ? y.votes + incrementAmount : y.votes,
-                        })),
+                        votes: y.id === suggestionId ? y.votes + incrementAmount : y.votes
+                        }))
                     })),
                 };
             },

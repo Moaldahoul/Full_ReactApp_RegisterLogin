@@ -60,7 +60,7 @@ export default {
     Mutation: {
         voteOnSuggestion: async (parent, { id } , { models, user }) => {
             await models.Vote.create({ suggestionId: id , userId: user.id });
-            pubsub.publish(VOTE_HAPPENED, { voteHappened:{ suggestionId: id , incrementAmount: 1 } });
+            pubsub.publish(VOTE_HAPPENED, { voteHappened: { suggestionId: id, incrementAmount: 1 } });
             return true;
         },
         updateUser: (parent, { username, newUsername } , { models }) => 
@@ -82,15 +82,7 @@ export default {
                 votes: 0,
             };
         },
-        createUser: async (parent, args, { models }) => {
-                const user = args;
-                user.password = 'idk';
-                const userAdded = await models.User.create(user);
-                pubsub.publish(USER_ADDED, { 
-                    userAdded, 
-                });
-                    return userAdded;
-        },
+        
         register: async (parent, args, { models }) => {
             const user = _.pick(args, 'username');
             const localAuth = _.pick(args, ['email', 'password']);
