@@ -1,11 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createNetworkInterface, ApolloProvider } from 'react-apollo'; //1
-import ApolloClient from 'apollo-client'; //2 it could be replaced with the next line 
-// import { ApolloClient, createNetworkInterface, ApolloProvider } from 'react-apollo';
+// import { createNetworkInterface, ApolloProvider } from 'react-apollo'; //1
+// import ApolloClient from 'apollo-client'; //2 it could be replaced with the next line 
+import { ApolloClient, createNetworkInterface, ApolloProvider } from 'react-apollo';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import {SubscriptionClient, addGraphQLSubscriptions} from 'subscriptions-transport-ws';
+import { SubscriptionClient, addGraphQLSubscriptions } from 'subscriptions-transport-ws';
+// import { addGraphQLSubscriptions } from 'add-graphql-subscriptions';
+
+
 import 'flexboxgrid/dist/flexboxgrid.min.css';
 
 import Routes from './routes';
@@ -16,7 +19,7 @@ injectTapEventPlugin();
 //     uri: '/graphql',
 //     opts: {
 //       credentials: 'same-origin',
-//     },
+//     }
 //   });
 
 const networkInterface = createNetworkInterface({
@@ -24,14 +27,15 @@ const networkInterface = createNetworkInterface({
     // uri: 'http://localhost:4000',
   });
 
-const wsClient = new SubscriptionClient(`ws://localhost:4000/subscriptions`, {
+const wsClient = new SubscriptionClient('ws://localhost:4000/subscriptions', {
     reconnect: true
   });
 
+
 const networkInterfaceWithSubscriptions = addGraphQLSubscriptions(
-    networkInterface,
-    wsClient
-  );
+        networkInterface, 
+        wsClient
+);
 
 networkInterface.use([
     {
@@ -47,7 +51,7 @@ networkInterface.use([
 ]);
 
 const client = new ApolloClient({
-    networkInterface: networkInterfaceWithSubscriptions,
+    networkInterface: networkInterfaceWithSubscriptions
   });
 
 const App = (

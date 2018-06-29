@@ -5,9 +5,11 @@
   "dependencies": {
     "@material-ui/core": "^1.2.0",
     "@material-ui/icons": "^1.1.0",
+    "add-graphql-subscriptions": "^1.0.1",
     "aor-graphql-client": "0.0.1",
     "apollo-client": "^2.3.2",
     "apollo-client-preset": "^1.0.8",
+    "apollo-link": "^1.2.2",
     "bootstrap": "^4.1.1",
     "flexboxgrid": "^6.3.1",
     "graphql": "^0.13.2",
@@ -21,7 +23,8 @@
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.1.4",
     "react-tap-event-plugin": "^3.0.3",
-    "subscriptions-transport-ws": "^0.9.11"
+    "subscriptions-transport-ws": "^0.8.3",
+    "ws": "^5.2.1"
   },
   "scripts": {
     "start": "react-scripts start",
