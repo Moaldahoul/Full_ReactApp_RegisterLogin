@@ -15,7 +15,6 @@ const db = {
    User: sequelize.import('./user'),
    Board: sequelize.import('./board'),
    Suggestion: sequelize.import('./suggestion'),
-   FbAuth: sequelize.import('./FbAuth'),
    LocalAuth: sequelize.import('./localAuth'),
    Vote: sequelize.import('./vote'),
 

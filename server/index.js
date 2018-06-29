@@ -34,6 +34,7 @@ const SECRET = 'asdfghjklqwertyuioppzxcvbnm';
 
 const app = express();
 
+
 passport.use(new FacebookStrategy(
   {
     clientID: '497361410683373',//process.env.FACEBOOK_CLIENT_ID, // need to be removed before to push it 
@@ -86,6 +87,7 @@ app.get('/auth/facebook/callback',
     // res.redirect('/');
   },);
 
+
 const addUser = async (req, res, next) => {
   const token = req.headers['x-token'];
   console.log(token);
@@ -115,6 +117,7 @@ app.use(
   '/graphiql',
   graphiqlExpress({ 
     endpointURL: '/graphql',
+    subscriptionsEndpoint: 'ws://localhost:4000/subscriptions',
   }),
 );
 
