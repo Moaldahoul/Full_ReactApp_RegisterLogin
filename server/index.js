@@ -20,7 +20,6 @@ import models from './models';
 import { createTokens, refreshTokens } from './auth';
 import joinMonsterMetadata from './joinMonsterMetadata'
 
-
 const schema = makeExecutableSchema({
   typeDefs,
   resolvers,
@@ -33,7 +32,6 @@ joinMonsterAdapt(schema, joinMonsterMetadata);
 const SECRET = 'asdfghjklqwertyuioppzxcvbnm';
 
 const app = express();
-
 
 passport.use(new FacebookStrategy(
   {
@@ -120,8 +118,6 @@ app.use(
     subscriptionsEndpoint: 'ws://localhost:4000/subscriptions',
   }),
 );
-
-
 // bodyParser is needed just for POST.
 app.use(
   '/graphql',
@@ -135,7 +131,6 @@ app.use(
     },
   })),
 );
-
 
 const server = createServer(app);
 
